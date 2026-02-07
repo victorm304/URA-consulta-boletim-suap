@@ -17,7 +17,7 @@ class AppConfig(object):
 
 
 def load_config_ini(path=None):
-    default_path = Path(__file__).resolve().parent / "app.conf"
+    default_path = Path(__file__).resolve().parent / "../app.conf"
     p = Path(path) if path else default_path
 
     cp = configparser.ConfigParser()
