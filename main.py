@@ -1,12 +1,12 @@
 #!/var/lib/asterisk/agi-bin/Voip-pesquisa-telefonia/.venv/bin/python3
 
 from asterisk.agi import *
-from suap.client import SuapClient
-from utils.utils import *
-from agi.handler import AgiHandler
-from tts.client import text_to_speech
-from config import load_config_ini
-from sts.client import speech_to_text
+from src.suap.client import SuapClient
+from src.utils.utils import *
+from src.agi.handler import AgiHandler
+from src.tts.client import text_to_speech
+from src.config import load_config_ini
+from src.sts.client import speech_to_text
 import os
 
 config = load_config_ini()
