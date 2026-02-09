@@ -1,8 +1,9 @@
 import requests
+from ..utils.errors import FalhaAoObterToken
 
 class SuapClient:
     def __init__(self, enrolment, responsible_code):
-        self.url = 'https://suap.ifrn.edu.br'
+        self.url = 'https://suap.ifrn.edu.br/'
         self.credentials = {
             'matricula': enrolment,
             'chave': responsible_code   
@@ -16,22 +17,23 @@ class SuapClient:
                 url= url,
                 headers={'accept': 'application/json'},
                 params=self.credentials,
-                timeout=15 
+                timeout=60 
             )
             res.raise_for_status()
             data = res.json()
             token = data.get('token')
             if not token:
-                raise Exception(f'Resposta sem token: {data}')
+                raise FalhaAoObterToken(f'Resposta sem token: {data}')
             return token 
 
         except Exception as e:
-            raise Exception('falha ao obter token:', e)
+            raise FalhaAoObterToken('Falha ao obter token:', e)
+        
             
     
     def _get_auth(self, endpoint, params=None):
         if not self._check_con():
-            raise Exception('Erro: sem conexão com suap.')
+            raise ConnectionError('Não foi possível estabelecer conexão com a api do suap.')
         
         token = self.get_student_token()
         url = self.url + endpoint
@@ -45,13 +47,13 @@ class SuapClient:
             )
             content_type = res.headers.get('content-type')
             if 'json' not in content_type:
-                raise ValueError(f'Erro na comunicaçao com api do SUAP, o conteúdo da resposta não é JSON: {content_type}')
+                raise ConnectionError(f'Erro na comunicaçao com api do SUAP, o conteúdo da resposta não é JSON: {content_type}')
             
             res.raise_for_status()
             return res.json()
         
         except requests.RequestException as e:
-            raise Exception(f"Falha no GET {endpoint}: {e}")
+            raise ConnectionError(f"Falha no GET {endpoint}: {e}")
     
     def get_boletim(self, year, period):
         endpoint = f'/api/ensino/meu-boletim/{year}/{period}/'
@@ -67,5 +69,7 @@ class SuapClient:
             res.raise_for_status()
             return True
         
+
         except requests.RequestException: 
             return False
+

@@ -23,7 +23,7 @@ def text_to_speech(url: str, text: str, voice_type) -> str:
             url=url, 
             headers=headers, 
             json=payload,
-            timeout=30
+            timeout=500
         )
 
         req.raise_for_status()

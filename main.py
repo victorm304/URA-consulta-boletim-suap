@@ -1,13 +1,14 @@
-#!/var/lib/asterisk/agi-bin/Voip-pesquisa-telefonia/.venv/bin/python3
+#!/var/lib/asterisk/agi-bin/URA-consulta-boletim-suap/.venv/bin/python3
 
 from asterisk.agi import *
 from src.suap.client import SuapClient
 from src.utils.utils import *
-from src.agi.handler import AgiHandler
+from src.utils.errors import *
+from src.ivr.controller import UraController
+from src.ivr.io import AgiIO
 from src.tts.client import text_to_speech
 from src.config import load_config_ini
 from src.sts.client import speech_to_text
-import os
 
 config = load_config_ini()
 
@@ -18,60 +19,70 @@ TTS_VOICE = config.tts_voice
 
 SUAP_USER_AGENT = config.suap_user_agent
 
+
 def main():
-   try:
-     agi = AGI()
-     agi_handler = AgiHandler(agi)
-     
-     agi.verbose("Inicio.")
-     agi.answer()
-     
-     agi_handler.home_menu()
-     matricula = agi_handler.ask_matricula()
-     choice = agi_handler.access_code_menu()
-     if choice == "1":
-          access_code = agi_handler.obtain_access_code_by_digit()
-     elif choice == "2":
-         audio_path = agi_handler.obtain_access_code_by_audio()
-         agi.verbose(f"audio salvo em: {audio_path}")
-         res = speech_to_text(url=STS_URL, path=audio_path)
-         access_code = res.get("text").lower()
-         agi.verbose(f"json: {res}")
-         agi.verbose(f"Código recebido: {access_code}")
+     try:
+          agi = AGI()
+          io = AgiIO(agi)
+          controller = UraController(io)
 
-         try:
-          os.remove(audio_path)
-         except Exception as e:
-             agi.verbose(f"Erro: {e}")
-         
-     suap = SuapClient(enrolment=matricula, responsible_code= access_code)
-     
-     req = suap.get_periodos()['results'][0]
-     year, period = req.get("ano_letivo"), req.get("periodo_letivo")
+          agi.answer()
 
-     boletim = suap.get_boletim(
-          year=year, 
-          period=period
-     )
-     
-     text_boletim = format_boletim(boletim)
-     
-     audio_wav = text_to_speech(
-          url=TTS_URL,
-          text=text_boletim,
-          voice_type=TTS_VOICE,
-     )
+          controller.home_menu()
 
-     audio_gsm = wav_to_gsm_8k(audio_wav)
-     os.remove(audio_wav)
+          while True:
+               matricula = controller.ask_matricula()
+               access_code_method = controller.get_access_code_method()
+               
+               if access_code_method == "1":
+                    access_code = controller.obtain_access_code_by_digit()
+                    agi.verbose(f"Código de acesso: {access_code}")
+               
+               if access_code_method == "2":
+                    audio = controller.obtain_access_code_by_audio()
+                    res = speech_to_text(url=STS_URL, path=audio)
+                    access_code = res.get("text").lower()
+                    remove_audio(audio)
 
-     agi.stream_file(audio_gsm.split(".gsm")[0])
+               try:
+                    io.play_sound("boletim", "realizando_consulta")
+                    year, period, boletim = suap_get_boletim(matricula=matricula, access_code=access_code)
+                    break
+               
+               except FalhaAoObterToken as e:
+                    agi.verbose(f"Ocorreu um erro: {e}")
+                    
+                    continuar = controller.try_again_choice()              
+                    if continuar == "1":
+                         continue
+                    else:
+                         break
 
-     agi.hangup()
-     
-    
-   except Exception as e:
-        agi.verbose(f"Erro: {e}")
+               except ConnectionError as e:
+                    agi.verbose(f"Ocorreu um erro: {e}")
+                    io.play_sound("erros/falha_suap", "1")
+                    break
+               
+          text_boletim = format_boletim(year, period, boletim)
+          boletim_audio_wav = text_to_speech(
+               url=TTS_URL,
+               text=text_boletim,
+               voice_type=TTS_VOICE
+          )
+
+          boletim_audio_gsm = wav_to_gsm_8k(boletim_audio_wav)
+          remove_audio(boletim_audio_wav)
+
+          io.play_boletim_audio(boletim_audio_gsm.split(".gsm")[0])
+          remove_audio(boletim_audio_wav)
+
+
+     except Exception as e:
+          agi.verbose(f"Erro: {e}")
+          io.play_sound("erro_interno", "erro_interno")
+     finally:
+          agi.hangup()
+
 
 if __name__ == "__main__":
     main()
