@@ -21,6 +21,8 @@ SUAP_USER_AGENT = config.suap_user_agent
 
 
 def main():
+     agi = None
+     io = None
      try:
           agi = AGI()
           io = AgiIO(agi)
@@ -38,11 +40,14 @@ def main():
                     access_code = controller.obtain_access_code_by_digit()
                     agi.verbose(f"Código de acesso: {access_code}")
                
-               if access_code_method == "2":
+               elif access_code_method == "2":
                     audio = controller.obtain_access_code_by_audio()
                     res = speech_to_text(url=STS_URL, path=audio)
-                    access_code = res.get("text").lower()
-                    remove_audio(audio)
+                    text = (res.get("text") or "").strip().lower()
+                    if not text:
+                         raise Exception("Falha na transcrição")
+
+                    access_code = text
 
                try:
                     io.play_sound("boletim", "realizando_consulta")
@@ -62,7 +67,8 @@ def main():
                     agi.verbose(f"Ocorreu um erro: {e}")
                     io.play_sound("erros/falha_suap", "1")
                     break
-               
+          
+            
           text_boletim = format_boletim(year, period, boletim)
           boletim_audio_wav = text_to_speech(
                url=TTS_URL,
@@ -74,7 +80,7 @@ def main():
           remove_audio(boletim_audio_wav)
 
           io.play_boletim_audio(boletim_audio_gsm.split(".gsm")[0])
-          remove_audio(boletim_audio_wav)
+          remove_audio(boletim_audio_gsm)
 
 
      except Exception as e:

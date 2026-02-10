@@ -61,6 +61,7 @@ class UraController:
 
 
     def obtain_access_code_by_audio(self) -> str:
+        self.io.play_sound("codigo_responsavel/voz/", "stts")
         return self.io.record_wav()
     
     def play_suap_is_off_audio(self):
