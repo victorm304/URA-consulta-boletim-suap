@@ -1,44 +1,33 @@
 # 🧠 URA-consulta-boletim-suap
 
-O sistema de **Resposta Audível Interativa (URA/IVR)** é uma aplicação desenvolvida para fornecer uma plataforma de telefonia automatizada que permite aos usuários interagir com serviços acadêmicos por telefone.
-
-O sistema utiliza o **Asterisk**, um framework open-source amplamente usado em telefonia, para gerenciar chamadas e oferecer uma interface de navegação por menus de voz.
-
-As principais funcionalidades incluem captura de entrada do usuário, reprodução de áudios e integração com APIs externas para consulta de dados.
+Sistema de **Resposta Audível Interativa (URA/IVR)** desenvolvido para permitir que usuários consultem informações acadêmicas por telefone. A aplicação é executada como um script AGI no **Asterisk**, conduzindo o fluxo de chamadas por menus de voz, capturando entradas via DTMF e integrando-se a APIs externas para obtenção e síntese de dados.
 
 ---
 
 ## 🚀 Funcionalidades
 
-- Gerenciamento de chamadas recebidas com navegação por menus  
-- Reprodução de arquivos de áudio para instruções e respostas  
-- Integração com APIs externas para consulta e processamento de dados  
-- Tratamento e validação de entradas do usuário  
-- Sistema de gerenciamento de configurações da aplicação  
-- Funções utilitárias para formatação de dados e operações no sistema  
-- Tratamento personalizado de exceções relacionadas a tokens  
+* Navegação por menus de voz no Asterisk
+* Reprodução de áudios em formato compatível com Asterisk (GSM/WAV)
+* Captura e validação de entradas DTMF
+* Integração com APIs externas para:
+
+  * Texto-para-fala (TTS)
+  * Fala-para-texto (STS)
+  * Consulta de dados acadêmicos (SUAP)
+* Gerenciamento de configurações via arquivo `app.conf`
+* Tratamento de exceções específicas (ex.: falhas de token/SUAP)
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## 🛠️ Tecnologias
 
-- **Frontend:** Não possui (aplicação via telefonia)  
-- **Backend:** Python 3.x  
-- **Banco de Dados:** Não possui (usa APIs externas)  
-- **IA:** Integração com SUAP (dados acadêmicos)
+* **Telefonia:** Asterisk (AGI)
+* **Backend:** Python
+* **Integrações:**
 
-<p align="left">
-  <img src="https://github.com/user-attachments/assets/bc7a500a-715f-41ec-a9f8-1e2667480368" width="600"/>
-</p>
-
-### Bibliotecas e Frameworks
-
-- `asterisk.agi` – Integração com Asterisk  
-- `configparser` – Gerenciamento de configurações  
-- `pathlib` – Operações de sistema de arquivos  
-- `subprocess` – Execução de comandos externos  
-- `os` – Interação com sistema operacional  
-- `SuapClient` – Integração com API do SUAP  
+  * SUAP (dados acadêmicos)
+  * Kokoro-FastAPI (TTS)
+  * whisper-transcription-api (STS)
 
 ---
 
@@ -48,6 +37,7 @@ As principais funcionalidades incluem captura de entrada do usuário, reproduç�
 
 ```bash
 git clone https://github.com/victorm304/URA-consulta-boletim-suap.git
+cd URA-consulta-boletim-suap
 ```
 
 2. Instale as dependências:
@@ -56,26 +46,25 @@ git clone https://github.com/victorm304/URA-consulta-boletim-suap.git
 pip install -r requirements.txt
 ```
 
-3. Configure o arquivo:
+3. Configure o arquivo `app.conf` (URLs das APIs, voz TTS, etc.).
 
-```
-app.conf
-```
-
-4. Execute a aplicação:
+4. Copie o script AGI para o diretório do Asterisk e ajuste permissões (exemplo):
 
 ```bash
-python main.py
+cp main.py /var/lib/asterisk/agi-bin/URA-consulta-boletim-suap/
+chmod +x /var/lib/asterisk/agi-bin/URA-consulta-boletim-suap/main.py
 ```
+
+5. Configure o plano de discagem do Asterisk para chamar o AGI.
 
 ---
 
 ## 💻 Uso
 
-1. Ligue para o número associado ao servidor Asterisk  
-2. Siga as instruções de voz do sistema  
-3. Insira as informações solicitadas via teclado do telefone  
-4. O sistema consultará os dados e responderá por áudio  
+1. Ligue para a extensão associada ao serviço no Asterisk.
+2. Siga as instruções de voz.
+3. Digite as informações solicitadas no teclado do telefone.
+4. O sistema consulta as APIs e responde por áudio.
 
 ---
 
@@ -86,88 +75,56 @@ python main.py
 ├── app.conf
 ├── main.py
 ├── README.md
-├── sounds
-│   ├── boletim
-│   │   ├── opcoes.gsm
-│   │   └── realizando_consulta.gsm
-│   ├── codigo_responsavel
-│   │   ├── 1.gsm
-│   │   ├── 2.gsm
-│   │   ├── 3.gsm
-│   │   ├── manual
-│   │   │   ├── 1.gsm
-│   │   │   ├── 2.gsm
-│   │   │   ├── 3.gsm
-│   │   │   ├── 4.gsm
-│   │   │   └── 5.gsm
-│   │   └── voz
-│   │       ├── 1.gsm
-│   │       ├── 1.wav
-│   │       ├── 2.gsm
-│   │       ├── 2.wav
-│   │       ├── 3.gsm
-│   │       └── 3.wav
-│   ├── erro_interno
-│   │   └── erro_interno.gsm
-│   ├── erros
-│   │   ├── falha_suap
-│   │   │   └── 1.gsm
-│   │   └── falha_token
-│   │       ├── 1.gsm
-│   │       └── 2.gsm
-│   ├── inicio
-│   │   ├── 1.gsm
-│   │   ├── 2.gsm
-│   │   └── 3.gsm
-│   └── matricula
-│       ├── 1.gsm
-│       └── 3.gsm
-└── src
+├── sounds/
+└── src/
     ├── config.py
-    ├── init.py
-    ├── ivr
-    │   ├── controller.py
-    │   ├── init.py
-    │   └── io.py
-    ├── sts
-    │   ├── client.py
-    │   └── init.py
-    ├── suap
-    │   ├── client.py
-    │   └── init.py
-    ├── tts
-    │   ├── client.py
-    │   └── init.py
-    └── utils
-        ├── errors.py
-        ├── init.py
-        └── utils.py
+    ├── ivr/
+    ├── sts/
+    ├── suap/
+    ├── tts/
+    └── utils/
 ```
+
+*(Estrutura completa disponível no repositório.)*
+
+---
+
+## 🔧 Dependências (requisitos mínimos)
+
+* **Python 3.6+**
+* `requests`
+* `pyst2`
+* Asterisk com suporte a AGI
+
+### APIs obrigatórias
+
+Para funcionamento completo do projeto, é necessário executar previamente:
+
+* **Kokoro-FastAPI (TTS):**
+  [https://github.com/remsky/Kokoro-FastAPI](https://github.com/remsky/Kokoro-FastAPI)
+
+* **whisper-transcription-api (STS):**
+  [https://github.com/victorm304/whisper-transcription-api](https://github.com/victorm304/whisper-transcription-api)
+
+As URLs dessas APIs devem ser configuradas em `app.conf`.
 
 ---
 
 ## 📌 Observações
 
-Este projeto foi desenvolvido como parte de um **Projeto Integrador do curso de Redes de Computadores do IFRN**, com foco em acessibilidade e automação de atendimento acadêmico.
+Projeto desenvolvido como parte do **Projeto Integrador do curso de Redes de Computadores do IFRN**, com foco em acessibilidade e automação de atendimento acadêmico.
 
 ---
 
 ## 👥 Autores
 
-- Jéssica Caroline da Silva  
-- Matheus da Silva Mendes  
-- Victor Matheus Machado Silva  
-- William Santanna de Araújo  
-
-## 📽️ Vídeo de apresentação
-
-Clique na imagem para assistir:
-
-[![Demo URA SUAP](https://img.youtube.com/vi/AXxk6qbx1ow/0.jpg)](https://youtu.be/AXxk6qbx1ow)
-
+* Jéssica Caroline da Silva
+* Matheus da Silva Mendes
+* Victor Matheus Machado Silva
+* William Santanna de Araújo
 
 ---
 
 ## 📜 Licença
 
-Este projeto é open-source e pode ser utilizado para fins acadêmicos e educacionais.
+Este projeto é **open-source** e pode ser utilizado para fins **acadêmicos e educacionais**.
