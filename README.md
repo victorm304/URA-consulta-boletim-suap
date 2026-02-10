@@ -157,9 +157,10 @@ Este projeto foi desenvolvido como parte de um **Projeto Integrador do curso de 
 
 ## 📽️ Vídeo de apresentação
 
-```
-<iframe width="560" height="315" src="https://www.youtube.com/embed/AXxk6qbx1ow?si=bCvOogEqT06qw02b" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-```
+Clique na imagem para assistir:
+
+[![Demo URA SUAP](https://img.youtube.com/vi/AXxk6qbx1ow/0.jpg)](https://youtu.be/AXxk6qbx1ow)
+
 
 ---
 
