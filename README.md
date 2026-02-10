@@ -10,39 +10,28 @@ O objetivo do projeto é demonstrar a aplicação de VoIP e automação em servi
 
 ## 🚀 Funcionalidades
 
-- Atendimento telefônico automatizado via URA  
-- Navegação por menus de voz  
-- Consulta de dados acadêmicos via API do SUAP  
-- Entrada de dados por DTMF e voz  
-- Síntese de voz (TTS) para respostas dinâmicas  
-- Tratamento de erros e validação de entradas  
-- Sistema de configuração via arquivo `.conf` 
+* Atendimento telefônico automatizado via URA
+* Navegação por menus de voz
+* Consulta de dados acadêmicos via API do SUAP
+* Entrada de dados por DTMF e voz
+* Síntese de voz (TTS) para respostas dinâmicas
+* Tratamento de erros e validação de entradas
+* Sistema de configuração via arquivo `.conf`
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
-- **Telefonia:** Asterisk / Issabel PBX  
-- **Backend:** Python 3.x  
-- **Integração:** API SUAP  
-- **Recursos de Voz (IA):**
-  - Text-to-Speech (TTS) - Kokoro-82M
-  - Speech-to-Text (STT) - Whisper Large V3
+* **Telefonia:** Asterisk / Issabel PBX
+* **Integração:** API SUAP
+* **Recursos de Voz (IA):**
+
+  * **Text-to-Speech (TTS):** Kokoro-82M
+  * **Speech-to-Text (STT):** Whisper Large V3
 
 <p align="left">
   <img src="https://github.com/user-attachments/assets/bc7a500a-715f-41ec-a9f8-1e2667480368" width="600"/>
 </p>
-
----
-
-### Bibliotecas e Frameworks
-
-- `asterisk.agi` – Integração com Asterisk  
-- `configparser` – Gerenciamento de configurações  
-- `pathlib` – Operações de sistema de arquivos  
-- `subprocess` – Execução de comandos externos  
-- `os` – Interação com sistema operacional  
-- `SuapClient` – Integração com API do SUAP  
 
 ---
 
@@ -52,6 +41,7 @@ O objetivo do projeto é demonstrar a aplicação de VoIP e automação em servi
 
 ```bash
 git clone https://github.com/victorm304/URA-consulta-boletim-suap.git
+cd URA-consulta-boletim-suap
 ```
 
 2. Instale as dependências:
@@ -60,93 +50,66 @@ git clone https://github.com/victorm304/URA-consulta-boletim-suap.git
 pip install -r requirements.txt
 ```
 
-3. Configure o arquivo:
+3. Configure o arquivo `app.conf` (URLs das APIs, voz TTS, etc.).
 
-```
-app.conf
-```
-
-4. Execute a aplicação:
+4. Copie **todo o diretório do projeto** para o diretório de scripts AGI do Asterisk e ajuste permissões (exemplo):
 
 ```bash
-python main.py
+cp -r URA-consulta-boletim-suap /var/lib/asterisk/agi-bin/
+chown -R asterisk:asterisk /var/lib/asterisk/agi-bin/URA-consulta-boletim-suap
+chmod -R 755 /var/lib/asterisk/agi-bin/URA-consulta-boletim-suap
 ```
+
+5. Configure o plano de discagem do Asterisk para chamar o AGI (exemplos abaixo).
 
 ---
 
 ## 💻 Uso
 
-1. Ligue para o número associado ao servidor Asterisk  
-2. Siga as instruções de voz do sistema  
-3. Informe matrícula ou código via teclado ou voz  
-4. O sistema consulta o SUAP e retorna por áudio 
+1. Ligue para o número associado ao servidor Asterisk
+2. Siga as instruções de voz do sistema
+3. Informe matrícula ou código via teclado ou voz
+4. O sistema consulta o SUAP e retorna por áudio
 
 ---
 
-## 📂 Estrutura do Projeto
+## 📞 Configuração no Asterisk (Dialplan)
 
-```plaintext
-.
-├── app.conf
-├── main.py
-├── README.md
-├── sounds
-│   ├── boletim
-│   │   ├── opcoes.gsm
-│   │   └── realizando_consulta.gsm
-│   ├── codigo_responsavel
-│   │   ├── 1.gsm
-│   │   ├── 2.gsm
-│   │   ├── 3.gsm
-│   │   ├── manual
-│   │   │   ├── 1.gsm
-│   │   │   ├── 2.gsm
-│   │   │   ├── 3.gsm
-│   │   │   ├── 4.gsm
-│   │   │   └── 5.gsm
-│   │   └── voz
-│   │       ├── 1.gsm
-│   │       ├── 1.wav
-│   │       ├── 2.gsm
-│   │       ├── 2.wav
-│   │       ├── 3.gsm
-│   │       └── 3.wav
-│   ├── erro_interno
-│   │   └── erro_interno.gsm
-│   ├── erros
-│   │   ├── falha_suap
-│   │   │   └── 1.gsm
-│   │   └── falha_token
-│   │       ├── 1.gsm
-│   │       └── 2.gsm
-│   ├── inicio
-│   │   ├── 1.gsm
-│   │   ├── 2.gsm
-│   │   └── 3.gsm
-│   └── matricula
-│       ├── 1.gsm
-│       └── 3.gsm
-└── src
-    ├── config.py
-    ├── init.py
-    ├── ivr
-    │   ├── controller.py
-    │   ├── init.py
-    │   └── io.py
-    ├── sts
-    │   ├── client.py
-    │   └── init.py
-    ├── suap
-    │   ├── client.py
-    │   └── init.py
-    ├── tts
-    │   ├── client.py
-    │   └── init.py
-    └── utils
-        ├── errors.py
-        ├── init.py
-        └── utils.py
+### Exemplo (modelo)
+
+Em **extensions_custom.conf** (ou no contexto adequado ao seu ambiente):
+
+```ini
+[teste]
+exten => xxxx,1,NoOp(inicio)
+ same => n,AGI(/var/lib/asterisk/agi-bin/URA-consulta-boletim-suap/main.py)
+ same => n,Hangup()
 ```
+
+> Substitua `xxxx` pelo número da extensão que você deseja utilizar no seu plano de discagem.
+
+---
+
+---
+
+## 🔧 Dependências (requisitos mínimos)
+
+* **Python 3.6+**
+* `requests`
+* `pyst2`
+* Asterisk com suporte a AGI
+
+### APIs obrigatórias
+
+Para funcionamento completo do projeto, é necessário executar previamente:
+
+* **Kokoro-FastAPI (TTS):**
+  [https://github.com/remsky/Kokoro-FastAPI](https://github.com/remsky/Kokoro-FastAPI)
+
+* **whisper-transcription-api (STT):**
+  [https://github.com/victorm304/whisper-transcription-api](https://github.com/victorm304/whisper-transcription-api)
+
+As URLs dessas APIs devem ser configuradas em `app.conf`.
 
 ---
 
@@ -154,19 +117,19 @@ python main.py
 
 Este projeto foi desenvolvido no **Projeto Integrador do curso de Redes de Computadores do IFRN**, com foco em:
 
-- Aplicação de VoIP na educação  
-- Automação de atendimento  
-- Integração de sistemas  
-- Acessibilidade a dados acadêmicos  
+* Aplicação de VoIP na educação
+* Automação de atendimento
+* Integração de sistemas
+* Acessibilidade a dados acadêmicos
 
 ---
 
 ## 👥 Autores
 
-- Jéssica Caroline da Silva  
-- Matheus da Silva Mendes  
-- Victor Matheus Machado Silva  
-- William Santanna de Araújo  
+* Jéssica Caroline da Silva
+* Matheus da Silva Mendes
+* Victor Matheus Machado Silva
+* William Santanna de Araújo
 
 ## 📽️ Vídeo de apresentação
 
@@ -174,9 +137,8 @@ Clique na imagem para assistir:
 
 [![Demo URA SUAP](https://img.youtube.com/vi/AXxk6qbx1ow/0.jpg)](https://youtu.be/AXxk6qbx1ow)
 
-
 ---
 
 ## 📜 Licença
 
-Este projeto é open-source e pode ser utilizado para fins acadêmicos e educacionais.
+Este projeto é **open-source** e pode ser utilizado para fins **acadêmicos e educacionais**.
