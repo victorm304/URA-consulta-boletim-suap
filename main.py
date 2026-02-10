@@ -8,7 +8,7 @@ from src.ivr.controller import UraController
 from src.ivr.io import AgiIO
 from src.tts.client import text_to_speech
 from src.config import load_config_ini
-from src.sts.client import speech_to_text
+from src.stt.client import speech_to_text
 
 config = load_config_ini()
 
