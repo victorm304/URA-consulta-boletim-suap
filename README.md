@@ -1,6 +1,6 @@
 # 🧠 URA-consulta-boletim-suap
 
-O **URA-consulta-boletim-suap** é um sistema de Resposta Audível Interativa (URA/IVR) que permite a pais e responsáveis consultarem informações acadêmicas de alunos por meio de chamadas telefônicas.
+O **URA-consulta-boletim-suap** é um sistema de Resposta Audível Interativa (URA/IVR) que permite a consulta informações acadêmicas de alunos por meio de chamadas telefônicas.
 
 O sistema integra **Asterisk/Issabel**, a API do **SUAP (IFRN)** e recursos de **síntese e reconhecimento de voz**, permitindo atendimento automatizado sem necessidade de interação humana.
 
