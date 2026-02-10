@@ -79,85 +79,64 @@ python main.py
 
 ```plaintext
 .
-.
 ├── app.conf
 ├── main.py
 ├── README.md
 ├── sounds
-│   ├── boletim
-│   │   ├── opcoes.gsm
-│   │   └── realizando_consulta.gsm
-│   ├── codigo_responsavel
-│   │   ├── 1.gsm
-│   │   ├── 2.gsm
-│   │   ├── 3.gsm
-│   │   ├── manual
-│   │   │   ├── 1.gsm
-│   │   │   ├── 2.gsm
-│   │   │   ├── 3.gsm
-│   │   │   ├── 4.gsm
-│   │   │   └── 5.gsm
-│   │   └── voz
-│   │       ├── 1.gsm
-│   │       ├── 1.wav
-│   │       ├── 2.gsm
-│   │       ├── 2.wav
-│   │       ├── 3.gsm
-│   │       ├── 3.wav
-│   │       └── stts.gsm
-│   ├── erro_interno
-│   │   └── erro_interno.gsm
-│   ├── erros
-│   │   ├── falha_suap
-│   │   │   └── 1.gsm
-│   │   └── falha_token
-│   │       ├── 1.gsm
-│   │       └── 2.gsm
-│   ├── inicio
-│   │   ├── 1.gsm
-│   │   ├── 2.gsm
-│   │   └── 3.gsm
-│   └── matricula
-│       ├── 1.gsm
-│       └── 3.gsm
+│   ├── boletim
+│   │   ├── opcoes.gsm
+│   │   └── realizando_consulta.gsm
+│   ├── codigo_responsavel
+│   │   ├── 1.gsm
+│   │   ├── 2.gsm
+│   │   ├── 3.gsm
+│   │   ├── manual
+│   │   │   ├── 1.gsm
+│   │   │   ├── 2.gsm
+│   │   │   ├── 3.gsm
+│   │   │   ├── 4.gsm
+│   │   │   └── 5.gsm
+│   │   └── voz
+│   │       ├── 1.gsm
+│   │       ├── 1.wav
+│   │       ├── 2.gsm
+│   │       ├── 2.wav
+│   │       ├── 3.gsm
+│   │       └── 3.wav
+│   ├── erro_interno
+│   │   └── erro_interno.gsm
+│   ├── erros
+│   │   ├── falha_suap
+│   │   │   └── 1.gsm
+│   │   └── falha_token
+│   │       ├── 1.gsm
+│   │       └── 2.gsm
+│   ├── inicio
+│   │   ├── 1.gsm
+│   │   ├── 2.gsm
+│   │   └── 3.gsm
+│   └── matricula
+│       ├── 1.gsm
+│       └── 3.gsm
 └── src
     ├── config.py
-    ├── __init__.py
+    ├── init.py
     ├── ivr
-    │   ├── controller.py
-    │   ├── __init__.py
-    │   ├── io.py
-    │   └── __pycache__
-    │       ├── controller.cpython-36.pyc
-    │       ├── handler.cpython-36.pyc
-    │       ├── __init__.cpython-36.pyc
-    │       └── io.cpython-36.pyc
-    ├── __pycache__
-    │   
+    │   ├── controller.py
+    │   ├── init.py
+    │   └── io.py
     ├── sts
-    │   ├── client.py
-    │   ├── __init__.py
-    │   └── __pycache__
-    │       ├── client.cpython-36.pyc
-    │       └── __init__.cpython-36.pyc
+    │   ├── client.py
+    │   └── init.py
     ├── suap
-    │   ├── client.py
-    │   ├── __init__.py
-    │   └── __pycache__
-    │       
+    │   ├── client.py
+    │   └── init.py
     ├── tts
-    │   ├── client.py
-    │   ├── __init__.py
-    │   └── __pycache__
-    │       ├── client.cpython-36.pyc
-    │       └── __init__.cpython-36.pyc
+    │   ├── client.py
+    │   └── init.py
     └── utils
         ├── errors.py
-        ├── __init__.py
-        ├── __pycache__
-        │   ├── errors.cpython-36.pyc
-        │   ├── __init__.cpython-36.pyc
-        │   └── utils.cpython-36.pyc
+        ├── init.py
         └── utils.py
 ```
 
