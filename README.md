@@ -27,7 +27,7 @@ As principais funcionalidades incluem captura de entrada do usuário, reproduç�
 - **Banco de Dados:** Não possui (usa APIs externas)  
 - **IA:** Integração com SUAP (dados acadêmicos)
 
-<p align="center">
+<p align="left">
   <img src="https://github.com/user-attachments/assets/bc7a500a-715f-41ec-a9f8-1e2667480368" width="600"/>
 </p>
 
