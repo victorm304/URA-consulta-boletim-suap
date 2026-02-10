@@ -83,7 +83,6 @@ Em **extensions_custom.conf** (ou no contexto adequado ao seu ambiente):
 [teste]
 exten => xxxx,1,NoOp(inicio)
  same => n,AGI(/var/lib/asterisk/agi-bin/URA-consulta-boletim-suap/main.py)
- same => n,Hangup()
 ```
 
 > Substitua `xxxx` pelo número da extensão que você deseja utilizar no seu plano de discagem.
