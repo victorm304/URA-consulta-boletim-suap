@@ -1,4 +1,4 @@
-# 🧠 URA-consulta-boletim-suap
+# URA-consulta-boletim-suap
 
 O **URA-consulta-boletim-suap** é um sistema de Resposta Audível Interativa (URA/IVR) que permite a consulta informações acadêmicas de alunos por meio de chamadas telefônicas.
 
@@ -8,7 +8,7 @@ O objetivo do projeto é demonstrar a aplicação de VoIP e automação em servi
 
 ---
 
-## 🚀 Funcionalidades
+## Funcionalidades
 
 * Atendimento telefônico automatizado via URA
 * Navegação por menus de voz
@@ -20,7 +20,7 @@ O objetivo do projeto é demonstrar a aplicação de VoIP e automação em servi
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 * **Telefonia:** Asterisk / Issabel PBX
 * **Integração:** API SUAP
@@ -91,7 +91,7 @@ exten => xxxx,1,NoOp(inicio)
 
 ---
 
-## 🔧 Dependências (requisitos mínimos)
+## Dependências (requisitos mínimos)
 
 * **Python 3.6+**
 * `requests`
@@ -112,7 +112,7 @@ As URLs dessas APIs devem ser configuradas em `app.conf`.
 
 ---
 
-## 📌 Observações
+## Observações
 
 Este projeto foi desenvolvido no **Projeto Integrador do curso de Redes de Computadores do IFRN**, com foco em:
 
