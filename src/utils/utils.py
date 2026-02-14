@@ -10,6 +10,8 @@ def format_boletim(ano: str, periodo: str, boletim: dict):
         
         nota_etapa_1 = d.get('nota_etapa_1')['nota']
         nota_etapa_2 = d.get('nota_etapa_2')['nota']
+        nota_etapa_3 = d.get('nota_etapa_3')['nota']
+        nota_etapa_4 = d.get('nota_etapa_4')['nota']
         media_disciplina = d.get('media_final_disciplina')
         nota_avaliacao_final = d.get('nota_avaliacao_final')['nota']        
         media_final = d.get('media_final_disciplina')
@@ -27,6 +29,10 @@ def format_boletim(ano: str, periodo: str, boletim: dict):
             text.append(f"Nota da segunda etapa:\n{nota_etapa_2},\n")
         if nota_etapa_2 is None:
             text.append(f"Nota da segunda etapa:\nAinda não publicado,\n")
+        if nota_etapa_3:
+            text.append(f"Nota da terceira etapa:\n{nota_etapa_3},\n")
+        if nota_etapa_4:
+            text.append(f"Nota da terceira etapa:\n{nota_etapa_3},\n")
         if media_disciplina:
             text.append(f"Média da Disciplina:\n{media_disciplina},\n")
         if media_disciplina is None:
