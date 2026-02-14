@@ -13,7 +13,7 @@ def speech_to_text(url: str, path: str) -> dict:
                 while status != "finished":
                     r = requests.get(url + "/" + job_id).json()
                     status = r.get("status")
-                    
+       
                     if r.get("error"):
                         break
                     
@@ -25,10 +25,10 @@ def speech_to_text(url: str, path: str) -> dict:
             return r
 
     except requests.exceptions.Timeout:
-        raise RuntimeError("Timeout ao conectar ao serviço STS")
+        raise RuntimeError("Timeout ao conectar ao serviço STT")
 
     except requests.exceptions.ConnectionError:
-        raise RuntimeError("Erro de conexão com o serviço STS")
+        raise RuntimeError("Erro de conexão com o serviço STT")
 
     except requests.exceptions.HTTPError as e:
         raise RuntimeError(
