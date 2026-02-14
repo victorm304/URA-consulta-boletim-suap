@@ -1,5 +1,4 @@
-#!/var/lib/asterisk/agi-bin/URA-consulta-boletim-suap/.venv/bin/python3
-
+#!/usr/bin/env python3
 from asterisk.agi import *
 from src.utils.utils import *
 from src.utils.errors import *
