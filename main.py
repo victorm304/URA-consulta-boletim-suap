@@ -10,7 +10,7 @@ from src.stt.client import speech_to_text
 config = load_config_ini()
 
 TTS_URL = config.tts_url
-STS_URL = config.sts_url
+STT_URL = config.stt_url
 
 TTS_VOICE = config.tts_voice
 
@@ -36,7 +36,7 @@ def main():
                     
                     elif access_code_method == "2":
                          audio = controller.obtain_access_code_by_audio()
-                         res = speech_to_text(url=STS_URL, path=audio)
+                         res = speech_to_text(url=STT_URL, path=audio)
                          
                          text = (res["result"]["text"].split(".")[0] or "").strip().lower()
                          if not text:
@@ -74,7 +74,6 @@ def main():
 
           boletim_audio_gsm = wav_to_gsm_8k(boletim_audio_wav)
           remove_audio(boletim_audio_wav)
-
           controller.play_boletim_audio(boletim_audio_gsm.split(".gsm")[0])
           remove_audio(boletim_audio_gsm)
 
@@ -88,3 +87,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
