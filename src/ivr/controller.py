@@ -43,7 +43,7 @@ class UraController:
         path = f"/tmp/rec_{uuid.uuid4()}"
         self.agi.record_file(
             path, "wav", 
-            timeout=60000, 
+            timeout=6000, 
             escape_digits="#"
         )
 
