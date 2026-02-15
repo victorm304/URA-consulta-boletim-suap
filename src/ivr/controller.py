@@ -1,4 +1,4 @@
-import uuid
+import tempfile
 from time import sleep
 from pathlib import Path
 
@@ -40,14 +40,15 @@ class UraController:
 
     # Gravação
     def record_wav(self):
-        path = f"/tmp/rec_{uuid.uuid4()}"
+        tmp = tempfile.NamedTemporaryFile(prefix="rec_", dir="/tmp", delete=False)
+        tmp_path = tmp.name
         self.agi.record_file(
-            path, "wav", 
-            timeout=6000, 
+            tmp_path, "wav", 
+            timeout=60000, 
             escape_digits="#"
         )
 
-        return path + ".wav"
+        return tmp_path + ".wav"
 
     def home_menu(self):
         return self.play_prompts(
