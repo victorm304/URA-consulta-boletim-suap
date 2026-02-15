@@ -23,11 +23,11 @@ class SuapClient:
             data = res.json()
             token = data.get('token')
             if not token:
-                raise FalhaAoObterToken(f'Resposta sem token: {data}')
+                raise FalhaAoObterToken(f'Resposta sem token')
             return token 
 
-        except Exception as e:
-            raise FalhaAoObterToken('Falha ao obter token:', e)
+        except Exception:
+            raise FalhaAoObterToken('Falha ao obter token')
         
             
     
