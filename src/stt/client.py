@@ -7,22 +7,31 @@ def speech_to_text(url: str, path: str) -> dict:
             for _ in range(7):
                 r = requests.post(url, params={"language": "pt"}, files={"file": f}, timeout=600)
                 r.raise_for_status()
-                job_id = r.json().get("job_id")
-                status = ""
-                
-                while status != "finished":
-                    r = requests.get(url + "/" + job_id).json()
-                    status = r.get("status")
-       
-                    if r.get("error"):
-                        break
                     
-                    time.sleep(2)
-
-                if status == "finished":
-                    break
+                data = r.json()
+                job_id = data.get("job_id")
+                token = data.get("token")
                 
-            return r
+                status = data.get("status")
+                if status == "queued":
+                    while status != "finished":
+                        r = requests.get(
+                            url=url + "/" + job_id,
+                            headers={'Authorization': f'Bearer {token}'}     
+                        ).json()
+
+                        status = r.get("status")
+        
+                        if status == "failed": break
+                        
+                        time.sleep(2)
+
+                    if status == "finished": break
+            
+        if status == "failed":
+            raise Exception("Transcrição de áudio falhou.")
+        
+        return r
 
     except requests.exceptions.Timeout:
         raise RuntimeError("Timeout ao conectar ao serviço STT")
