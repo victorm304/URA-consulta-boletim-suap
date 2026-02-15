@@ -1,5 +1,6 @@
 import requests
 import tempfile
+import os
 
 def text_to_speech(url: str, text: str, voice_type) -> str:
     try:
@@ -32,8 +33,14 @@ def text_to_speech(url: str, text: str, voice_type) -> str:
         if "audio" not in content_type:
             raise ValueError(f"Erro no TTS, resposta não é aúdio: {content_type}")
 
-        with tempfile.NamedTemporaryFile(mode="wb", suffix=".wav", delete=False) as f:
-            f.write(req.content)      
+        f = tempfile.NamedTemporaryFile(mode="wb", suffix=".wav", delete=False)
+        os.chmod(f.name, 0o600)
+        f.write(req.content)
+        f.close()
+
+        if os.path.exists(f.name):
+            os.chmod(f.name, 0o600)     
+
         return f.name
         
     except requests.exceptions.Timeout:

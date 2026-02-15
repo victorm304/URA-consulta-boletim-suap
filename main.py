@@ -37,7 +37,8 @@ def main():
                     elif access_code_method == "2":
                          audio = controller.obtain_access_code_by_audio()
                          res = speech_to_text(url=STT_URL, path=audio)
-                         
+                         remove_file(audio)
+
                          text = (res["result"]["text"].split(".")[0] or "").strip().lower()
                          if not text:
                               raise FalhaAoObterToken("Falha na transcrição")
@@ -73,9 +74,9 @@ def main():
           )
 
           boletim_audio_gsm = wav_to_gsm_8k(boletim_audio_wav)
-          remove_audio(boletim_audio_wav)
+          remove_file(boletim_audio_wav)
           controller.play_boletim_audio(boletim_audio_gsm.split(".gsm")[0])
-          remove_audio(boletim_audio_gsm)
+          remove_file(boletim_audio_gsm)
 
 
      except Exception as e:

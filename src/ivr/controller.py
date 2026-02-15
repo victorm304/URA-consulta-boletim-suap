@@ -1,4 +1,5 @@
 import tempfile
+import os
 from time import sleep
 from pathlib import Path
 
@@ -42,13 +43,22 @@ class UraController:
     def record_wav(self):
         tmp = tempfile.NamedTemporaryFile(prefix="rec_", dir="/tmp", delete=False)
         tmp_path = tmp.name
+        tmp.close()
+
+        os.chmod(tmp_path, 0o600)
+
         self.agi.record_file(
             tmp_path, "wav", 
             timeout=60000, 
             escape_digits="#"
-        )
+        )    
 
-        return tmp_path + ".wav"
+        wav_path = tmp_path + ".wav"
+        
+        if os.path.exists(wav_path):
+            os.chmod(wav_path, 0o600)
+
+        return wav_path
 
     def home_menu(self):
         return self.play_prompts(

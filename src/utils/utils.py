@@ -57,11 +57,11 @@ def suap_get_boletim(matricula, access_code):
     
     return year, period, boletim
 
-def remove_audio(path):
+def remove_file(path):
     try:
         os.remove(path)
-    except:
-        pass
+    except Exception as e:
+        print(f"Não foi possivel remover: {e}")
 
 def run_cmd(command):
     subprocess.run(command, check=True)
