@@ -7,12 +7,12 @@ class AppConfig(object):
         self,
         tts_url,
         tts_voice,
-        sts_url,
+        stt_url,
         suap_user_agent
     ):
         self.tts_url = tts_url
         self.tts_voice = tts_voice
-        self.sts_url = sts_url
+        self.stt_url = stt_url
         self.suap_user_agent = suap_user_agent
 
 
@@ -28,6 +28,6 @@ def load_config_ini(path=None):
     return AppConfig(
         tts_url=cp.get("tts", "url", fallback=""),
         tts_voice=cp.get("tts", "voice", fallback=""),
-        sts_url=cp.get("sts", "url", fallback=""),
+        stt_url=cp.get("stt", "url", fallback=""),
         suap_user_agent=cp.get("suap", "user_agent", fallback="")
     )
