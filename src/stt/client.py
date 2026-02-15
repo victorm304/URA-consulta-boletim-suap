@@ -1,48 +1,75 @@
 import requests
-import time
+from ..utils.errors import FalhaAoObterToken
 
-def speech_to_text(url: str, path: str) -> dict:
-    try:
-        with open(path, mode="rb") as f:
-            for _ in range(7):
-                r = requests.post(url, params={"language": "pt"}, files={"file": f}, timeout=600)
-                r.raise_for_status()
-                    
-                data = r.json()
-                job_id = data.get("job_id")
-                token = data.get("token")
-                
-                status = data.get("status")
-                if status == "queued":
-                    while status != "finished":
-                        r = requests.get(
-                            url=url + "/" + job_id,
-                            headers={'Authorization': f'Bearer {token}'}     
-                        ).json()
+class SuapClient:
+    def __init__(self, enrolment, responsible_code):
+        self.url = 'https://suap.ifrn.edu.br/'
+        self.credentials = {
+            'matricula': enrolment,
+            'chave': responsible_code   
+        }
+       
+    def get_student_token(self):
+        endpoint = '/api/ensino/autenticacao/acesso-responsaveis/'
+        url = self.url + endpoint  
+        try:
+            res = requests.post(
+                url= url,
+                headers={'accept': 'application/json'},
+                params=self.credentials,
+                timeout=60 
+            )
+            res.raise_for_status()
+            data = res.json()
+            token = data.get('token')
+            if not token:
+                raise FalhaAoObterToken(f'Resposta sem token')
+            return token 
 
-                        status = r.get("status")
+        except Exception:
+            raise FalhaAoObterToken('Falha ao obter token')
         
-                        if status == "failed": break
-                        
-                        time.sleep(2)
-
-                    if status == "finished": break
             
-        if status == "failed":
-            raise Exception("Transcrição de áudio falhou.")
-        
-        return r
-
-    except requests.exceptions.Timeout:
-        raise RuntimeError("Timeout ao conectar ao serviço STT")
-
-    except requests.exceptions.ConnectionError:
-        raise RuntimeError("Erro de conexão com o serviço STT")
-
-    except requests.exceptions.HTTPError as e:
-        raise RuntimeError(
-            f"Erro HTTP {e.response.status_code}: {e.response.text}"
-        )
     
-    except requests.exceptions.RequestException as e:
-        raise RuntimeError(f"Erro inesperado no requests: {e}")
+    def _get_auth(self, endpoint, params=None):
+        if not self._check_con():
+            raise ConnectionError('Não foi possível estabelecer conexão com a api do suap.')
+        
+        token = self.get_student_token()
+        url = self.url + endpoint
+
+        try:
+            res = requests.get(
+                url=url,
+                headers={'Authorization': f'Bearer {token}'},
+                params=params,
+                timeout=15
+            )
+            content_type = res.headers.get('content-type')
+            if 'json' not in content_type:
+                raise ConnectionError(f'Erro na comunicaçao com api do SUAP, o conteúdo da resposta não é JSON: {content_type}')
+            
+            res.raise_for_status()
+            return res.json()
+        
+        except requests.RequestException as e:
+            raise ConnectionError(f"Falha no GET {endpoint}: {e}")
+    
+    def get_boletim(self, year, period):
+        endpoint = f'/api/ensino/meu-boletim/{year}/{period}/'
+        return self._get_auth(endpoint)
+    
+    def get_periodos(self):
+        endpoint = '/api/ensino/meus-periodos-letivos/'
+        return self._get_auth(endpoint)
+
+    def _check_con(self):
+        try:
+            res = requests.get(self.url, timeout=10, stream=True)
+            res.raise_for_status()
+            return True
+        
+
+        except requests.RequestException: 
+            return False
+
