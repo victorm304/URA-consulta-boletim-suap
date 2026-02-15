@@ -57,7 +57,6 @@ pip install -r requirements.txt
 ```bash
 cp -r URA-consulta-boletim-suap /var/lib/asterisk/agi-bin/
 chown -R asterisk:asterisk /var/lib/asterisk/agi-bin/URA-consulta-boletim-suap
-chmod -R 755 /var/lib/asterisk/agi-bin/URA-consulta-boletim-suap
 ```
 
 5. Configure o plano de discagem do Asterisk para chamar o AGI (exemplos abaixo).
