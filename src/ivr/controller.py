@@ -1,7 +1,6 @@
 import uuid
 from time import sleep
 from pathlib import Path
-from time import sleep
 
 
 SOUNDS_DIR = Path(__file__).resolve().parent / "../../sounds"
