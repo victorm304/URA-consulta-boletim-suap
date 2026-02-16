@@ -5,7 +5,7 @@ def speech_to_text(url: str, path: str) -> dict:
     try:
         with open(path, mode="rb") as f:
             for _ in range(7):
-                r = requests.post(url, params={"language": "pt"}, files={"file": f}, timeout=600)
+                r = requests.post(url, params={"language": "pt"}, files={"file": f}, timeout=600, verify=False)
                 r.raise_for_status()
                     
                 data = r.json()
@@ -17,7 +17,8 @@ def speech_to_text(url: str, path: str) -> dict:
                     while status != "finished":
                         r = requests.get(
                             url=url + "/" + job_id,
-                            headers={'Authorization': f'Bearer {token}'}     
+                            headers={'Authorization': f'Bearer {token}'},
+                            verify=False     
                         ).json()
 
                         status = r.get("status")
