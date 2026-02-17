@@ -12,10 +12,9 @@ config = load_config_ini()
 TTS_URL = config.tts_url
 STT_URL = config.stt_url
 
+STT_API_KEY = config.stt_api_key
+
 TTS_VOICE = config.tts_voice
-
-SUAP_USER_AGENT = config.suap_user_agent
-
 
 def main():
      agi = None
