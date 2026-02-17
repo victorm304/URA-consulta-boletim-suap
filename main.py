@@ -35,7 +35,11 @@ def main():
                     
                     elif access_code_method == "2":
                          audio = controller.obtain_access_code_by_audio()
-                         res = speech_to_text(url=STT_URL, path=audio)
+                         res = speech_to_text(
+                              url=STT_URL, 
+                              api_key=STT_API_KEY, 
+                              path=audio
+                         )
                          remove_file(audio)
 
                          text = (res["result"]["text"].split(".")[0] or "").strip().lower()
