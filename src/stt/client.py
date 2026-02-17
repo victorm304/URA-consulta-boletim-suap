@@ -1,23 +1,29 @@
 import requests
 import time
 
-def speech_to_text(url: str, path: str) -> dict:
+def speech_to_text(url: str, api_key: str, path: str) -> dict:
     try:
         with open(path, mode="rb") as f:
             for _ in range(7):
-                r = requests.post(url, params={"language": "pt"}, files={"file": f}, timeout=600, verify=False)
+                r = requests.post(
+                    url, params={"language": "pt"}, 
+                    files={"file": f}, 
+                    headers={"Authorization": f"Bearer {api_key}"},
+                    timeout=600, 
+                    verify=False
+                )
+                
                 r.raise_for_status()
                     
                 data = r.json()
-                job_id = data.get("job_id")
-                token = data.get("token")
-                
+                job_id = data.get("job_id") 
                 status = data.get("status")
+
                 if status == "queued":
                     while status != "finished":
                         r = requests.get(
                             url=url + "/" + job_id,
-                            headers={'Authorization': f'Bearer {token}'},
+                            headers={'Authorization': f'Bearer {api_key}'},
                             verify=False     
                         ).json()
 
