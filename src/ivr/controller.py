@@ -111,19 +111,28 @@ class UraController:
             escape_digit="12"
         )
 
-    def play_boletim_audio(self, path: str):
+    def boletim_prompt(self):
+        digit = self.play_prompts(
+            subdir="boletim",
+            prompts=[
+                ("opcoes2", 0)
+            ],
+            valid_digits=["1", "2", "3"],
+            escape_digit="123"
+        )
+        return digit
+
+    def show_boletim(self, audio_notas, audio_faltas):
+        self.play_sound("boletim", "sucesso_consulta")
+        
         digit = ""
-        while digit != "2":
-            self.agi.stream_file(path)
-            sleep(0.5)
-            digit = self.play_prompts(
-                subdir="boletim",
-                prompts=[
-                    ("opcoes", 0)
-                ],
-                valid_digits=["1", "2"],
-                escape_digit="12"
-            )
+        while digit != "3":
+            digit = self.boletim_prompt()
+            if digit == "1":
+                self.agi.stream_file(audio_notas)
+            elif digit == "2":
+                self.agi.stream_file(audio_faltas)
+
 
     def ask_matricula(self):
         self.play_sound("matricula", "3")

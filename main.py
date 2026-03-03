@@ -16,6 +16,8 @@ STT_API_KEY = config.stt_api_key
 
 TTS_VOICE = config.tts_voice
 
+MAX_TENT = 3
+
 def main():
      agi = None
      controller = None
@@ -26,7 +28,10 @@ def main():
           agi.answer()
           controller.home_menu()
 
-          while True:
+          tent = 0
+          while tent < MAX_TENT:
+               tent += 1
+
                matricula = controller.ask_matricula()
                access_code_method = controller.get_access_code_method()
                try:
@@ -51,40 +56,46 @@ def main():
                     
                     controller.play_sound("boletim", "realizando_consulta")
                     year, period, boletim = suap_get_boletim(matricula=matricula, access_code=access_code) 
+                    
                     break
                     
                except FalhaAoObterToken as e:
                     agi.verbose(f"Ocorreu um erro: {e}")
-                    
                     continuar = controller.try_again_choice()              
-                    if continuar == "1": continue
-                    else:
-                         agi.hangup() 
-                         break
+                    if continuar != "1":
+                         return     
+                    continue
+                    
 
                except ConnectionError as e:
                     agi.verbose(f"Ocorreu um erro: {e}")
                     controller.play_sound("erros/falha_suap", "1")
-                    agi.hangup()
-                    break
+                    return
           
-            
-          text_boletim = format_boletim(year, period, boletim)
-          boletim_audio_wav = text_to_speech(
-               url=TTS_URL,
-               text=text_boletim,
-               voice_type=TTS_VOICE
-          )
+          else:
+               controller.play_sound("erros", "excedido_lim_tentativas")
+               return
+     
+          def tts(t):
+               wav =  text_to_speech(
+                    url=TTS_URL,
+                    text=t,
+                    voice_type=TTS_VOICE
+               )
+               gsm = wav_to_gsm_8k(wav)
+               remove_file(wav)
+               return os.path.splitext(gsm)[0]
 
-          boletim_audio_gsm = wav_to_gsm_8k(boletim_audio_wav)
-          remove_file(boletim_audio_wav)
-          controller.play_boletim_audio(boletim_audio_gsm.split(".gsm")[0])
-          remove_file(boletim_audio_gsm)
+          tnotas, tfaltas = format_boletim(year, period, boletim)
+          audio_notas = tts(tnotas)
+          audio_faltas = tts(tfaltas)
+
+          controller.show_boletim(audio_notas, audio_faltas)
 
 
      except Exception as e:
           agi.verbose(f"Erro: {e}")
-          controller.play_sound("erro_interno", "erro_interno")
+          controller.play_sound("erros", "erro_interno")
      finally:
           agi.hangup()
 
